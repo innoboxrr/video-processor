@@ -2,34 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Testing
-
-use Illuminate\Support\Facades\Artisan;
-use Innoboxrr\VideoProcessor\Services\VideoService;
-use Innoboxrr\VideoProcessor\Jobs\VimeoVideoUploadJob;
-
-Route::get('test', function(VideoService $videoService) {
-	/*
-	Artisan::call('vimeo:upload', [
-            'videoId' => 5
-        ]);
-
-	dd();
-	*/
-
-	\App\Models\Video::where('status', 'active')
-		->where('cloud', 'vimeo')
-		->get()
-		->map(function( $video ) {
-
-		VimeoVideoUploadJob::dispatch($video->id);
-
-	});
-
-});
-
-// Rutas de la aplicación
-
+// Upload
 Route::post('initiate-upload', 'S3MultipartController@initiateUpload')
 	->name('initiate.upload');
 
@@ -40,8 +13,9 @@ Route::post('complete-upload', 'S3MultipartController@completeUpload')
 	->name('complete.upload');
 
 
-// Procesamiento y reproducción
+// Player
 
+// Responsable for serving the player view
 Route::get('player/{code}', 'VideoController@player')
 	->name('player');
 

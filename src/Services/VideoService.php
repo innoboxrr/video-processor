@@ -48,12 +48,10 @@ class VideoService extends AbstractVideoService
             ->setSegmentLength(10) 
             ->setKeyFrameInterval(48) 
             ->withRotatingEncryptionKey(function ($filename, $contents) use ($video) {
-
                 Storage::disk('s3')->put($video->s3_keys_path . DIRECTORY_SEPARATOR . $filename, $contents);
-
             })
-            //->addFormat($lowBitrate)
-            //->addFormat($midBitrate)
+            ->addFormat($lowBitrate)
+            ->addFormat($midBitrate)
             ->addFormat($highBitrate)
             ->save($video->s3_hls_master);
 
@@ -104,9 +102,7 @@ class VideoService extends AbstractVideoService
     public function keyResponse($code, $key) 
     {
         $video = $this->getVideoByCode($code);
-
         $path = $video->s3_keys_path . '/' . $key;
-    
         return Storage::disk('s3')->download($path);
     }
 

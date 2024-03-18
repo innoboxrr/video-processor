@@ -2,9 +2,6 @@
 
 return [
 
-	// Esto es necesario para el proceso de migración de videos de vimeo a iTec School
-	'vimeo_token' => '7f077f6691f17823291611e6597d0d16', // iTec School VA
-
 	'ffmpeg_path' => env('FFMPEG_PATH', 'C:/xampp/htdocs/github/innoboxrr/video-processor/bin/ffmpeg/ffmpeg.exe'),
 
 	'ffprobe_path' => env('FFMPEG_PATH', 'C:/xampp/htdocs/github/innoboxrr/video-processor/bin/ffmpeg/ffprobe.exe'),
@@ -14,5 +11,15 @@ return [
     'cloudfront_url' => env('CLOUDFRONT_URL', 'd1st6n2eacne1j.cloudfront.net'),
 
     'video_path' => env('VIDEO_PATH', 'videos'),
+
+	// Player settings
+
+	'video_watermark' => env('VIDEO_WATERMARK'),
+
+	'video_icon' => env('VIDEO_ICON'),
+
+	'video_allow_embed' => env('VIDEO_ALLOW_EMBED', 0),
+
+	'video_show_watermark' => env('VIDEO_SHOW_WATERMARK', 0),
 	
 ];

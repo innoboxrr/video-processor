@@ -5,14 +5,14 @@
         <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>{{ $video->name }}</title>
-    </head>
-
-    <body>
-
-        <link href="/plugins/videojs8/skins/{{ $video->theme }}/videojs.min.css" rel="stylesheet" type="text/css">     
+        <link href="/plugins/videojs8/examples/css/style.css" rel="stylesheet" type="text/css">
+        <link href="/plugins/videojs8/skins/nuevo/videojs.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>      
         <script src="/plugins/videojs8/video.min.js"></script>
         <script src="/plugins/videojs8/nuevo.min.js?78"></script>
+        <script src="/plugins/videojs8/plugins/videojs.hotkeys.min.js"></script>
         <script src="/plugins/videojs8/plugins/videojs.events.js"></script>
+        <script src="/plugins/videojs8/plugins/videojs-chromecast.min.js"></script>
         <style type="text/css">
             * {
                 margin: 0;
@@ -42,6 +42,9 @@
                 transform: translate(-50%,-50%);
             }
         </style>
+    </head>
+
+    <body>
 
         <div class="video-container">
 
@@ -55,10 +58,11 @@
                 <!-- SOURCE -->
                 <source 
                     type="application/x-mpegURL"
-                    src="{{ route('videoprocessor.playlist', ['code' => $video->code, 'filename' => 'master.m3u8']) }}">
-
+                    src="{{ route('videoprocessor.playlist', [
+                        'code' => $video->code,
+                        'filename' => 'master.m3u8'
+                    ]) }}">
                 <!-- CHAPTERS -->
-                {{--
                 <track 
                     kind="chapters" 
                     src="/plugins/videojs8/examples/chapters/test-en.vtt" 
@@ -67,22 +71,23 @@
                     kind="chapters" 
                     src="/plugins/videojs8/examples/chapters/test-es.vtt" 
                     srclang="es">
-                --}}
 
                 <!-- CAPTIONS -->
-                {{--
+
                 <track 
                     kind="captions" 
                     src="/plugins/videojs8/examples/captions/en.vtt" 
                     srclang="en" 
                     label="English" default>
+
                 <track 
                     kind="captions" 
                     src="/plugins/videojs8/examples/captions/es.vtt" 
                     srclang="es" 
                     label="Español">
-                --}}
+
             </video>
+
         </div>
 
         <script>
@@ -92,100 +97,95 @@
             player.nuevo({ 
 
                 // ** Data **
-                @if($video->title) 
-                    title: "{{ $video->title }}", 
-                @endif
-
+                title: "{{ $video->lesson->name }}",
                 url: "{{ route('videoprocessor.player', ['code' => $video->code]) }}",
-
-                @if($video->embed) 
-                    embed: '<iframe src="{{ $video->embed }}" width="640" height="360" frameborder="0" allowfullscreen></iframe>',
-                @endif
+                embed: '<iframe src="{{ $video->oEmbed }}" width="640" height="360" frameborder="0" allowfullscreen></iframe>',
+                
+                // ** Video Info **
+                videoInfo: true,
+                infoIcon: "/plugins/videojs8/examples/assets/images/logo_small.png",  // optional
+                infoUrl: "https://www.nuevodevel.com/nuevo/showcase/videoinfo",  // optional
+                infoTitle: "{{ $video->lesson->name }}",
+                infoDescription: "{{ $video?->user?->name }}",
 
                 // ** Logos **
-                @if($video->show_watermark)
-                    logo: "{{ config('videoprocessor.video_watermark') }}",
-                    logocontrolbar: "{{ config('videoprocessor.video_icon') }}", 
-                    logourl: "{{ $video->logo_url }}", 
-                    logoposition: "{{ $video->logo_position }}", // (LT) RT: Right Top, LT: Left Top, BL: Bottom Left 
-                    target: '_blanck', // (_blanck) _self
-                    logotitle: "{{ $video->title }}",
-                @endif
-
-                // ** Context menu **
-                contextMenu: false,
-
-                // ** Video Info **
-                // videoInfo: true,
-                // infoIcon: "/plugins/videojs8/examples/assets/images/logo_small.png",  // optional
-                // infoUrl: "https://www.nuevodevel.com/nuevo/showcase/videoinfo",  // optional
-                // infoTitle: "{{ $video->lesson->name }}",
-                // infoDescription: "{{ $video?->user?->name }}",
+                logo: "/plugins/videojs8/examples/assets/images/logo.png", // (undefined)
+                logocontrolbar: "https://laravelers.com/filesystem/2933.ico", // (undefined)
+                logourl: "https://laravelers.com", // (undefined)
+                logoposition: "RT", // (LT) RT: Right Top, LT: Left Top, BL: Bottom Left 
+                target: '_blanck', // (_blanck) _self
+                logotitle: "laravelers.com",
                 
                 // ** Player setup **
-                // relatedMenu: true, // (true)
-                shareMenu: false, // (true)
-                // rateMenu: true, // (true)
-                // zoomMenu: true, // (true)
-                // settingsButton: true, // (true)
-                // controlbar: true, // (true)
-                // iosFullscreen: 'native', // (native) 'pseudo'
-                // androidLock: true, 
-                // pipButton: true, // Show/Hide PictureInPicture button
-                // ccButton: true,
-                // qualityMenu: true, // Creo que esto no funciona
-                // tooltips: true,
-                // hdicon: true, // Mestra la opción de HD en el menú de calidad
-                // chapterMarkers: true,
-                // touchControls: true,
-                // touchRewindForward: true,
+                relatedMenu: true, // (true)
+                shareMenu: true, // (true)
+                rateMenu: true, // (true)
+                zoomMenu: true, // (true)
+                settingsButton: true, // (true)
+                controlbar: true, // (true)
+                iosFullscreen: 'native', // (native) 'pseudo'
+                androidLock: true, 
+                pipButton: true, // Show/Hide PictureInPicture button
+                ccButton: true,
+                qualityMenu: true, // Creo que esto no funciona
+                tooltips: true,
+                hdicon: true, // Mestra la opción de HD en el menú de calidad
+                chapterMarkers: true,
+                touchControls: true,
+                touchRewindForward: true,
+
+                // ** Context menu **
+                contextMenu: true,
+                contextUrl: 'https://laravelers.com',
+                contextText: '&copy; Laravelers.com',
 
                 // ** Zoom **
-                // zoomInfo: true,
-                // zoomWheel: true,
+                zoomInfo: true,
+                zoomWheel: true,
 
                 // ** Rewin/Forward **
-                // buttonRewind: true,
-                // buttonForward: true,
-                // mirrorButton: true,
-                // theaterButton: true,
-                // rewindforward: 10,
+                buttonRewind: true,
+                buttonForward: true,
+                mirrorButton: true,
+                theaterButton: true,
+                rewindforward: 10,
 
                 // ** Start Time **
-                // startTime: undefined, // Define el tiempo en segundos donde comenzar el video
+                startTime: undefined, // Define el tiempo en segundos donde comenzar el video
                 
                 // ** Resume **
-                video_id: "{{ $video->code }}",
+                video_id: "{{ $video->uuid }}",
                 resume: true, // Permite retomar el video desde donde se quedo.
-                // endAction: undefined,
-                // related: [], //  javascript array of related videos.
+                endAction: undefined,
+                related: [], //  javascript array of related videos.
 
                 // ** Sprite **
                 // Docs: https://www.nuevodevel.com/nuevo/showcase/sprite
-                // slideImage: "/plugins/videojs8/examples/images/sprite.jpg",
-                // ghostThumb: true,
-            
+                /*
+                slideImage: "/plugins/videojs8/examples/images/sprite.jpg",
+                ghostThumb: true,
+                */
 
                 // ** Limit Image **
-                // limit: 5,
-                // limiturl: 'https://laravelers.com',
-                // limitimage: '/videojs/examples/images/limit.png',
-                // limitmessage: 'Your message text' // optional, 
+                /*
+                limit: 5,
+                limiturl: 'https://laravelers.com',
+                limitimage: '/videojs/examples/images/limit.png',
+                limitmessage: 'Your message text' // optional, 
+                */
 
                 // ** Snapshot **
-                // snapshot: true,
-                // snapshotWatermark: "laravelers.com",
+                snapshot: true,
+                snapshotWatermark: "laravelers.com",
 
             });
 
-            /*
             player.hotkeys({
                 volumeStep: 0.1,
                 seekStep: 5
             });
-            */
 
-            player.events({ analytics: true });
+            player.events({ analytics:true });
 
             player.on('track', (e, data) => {
 
@@ -384,6 +384,8 @@
 
                         case 'play':
 
+                            console.log('play from iframe')
+
                             player.play()
 
                         break;
@@ -438,52 +440,52 @@
                 });
 
             // Verificación de iFrame
-                if (window.self !== window.parent) {
-                    
-                    // Pendiente: Verificar que se inserte solo dentro de un curso
+            if (window.self !== window.parent) {
+                
+                // Pendiente: Verificar que se inserte solo dentro de un curso
+
+            } else {
+
+                // Si no se inserta en un espacio, regresar al inicio
+                location.href = '{{ url('/') }}'
+
+            }
+
+            // Verificar cambios en la visibilidad de la ventana del video
+            document.addEventListener("visibilitychange", function() {
+
+                
+
+                if (document.visibilityState === 'hidden') {
+
+                    console.log('El usuario podría haber cambiado de pestaña o minimizado la ventana');
 
                 } else {
 
-                    // Verificar si el video permite embed @if($video->embed) @endif
-
-                    // Si no se inserta en un espacio, regresar al inicio
-                    // location.href = '{{ url('/') }}'
+                    console.log('El usuario ha regresado a la ventana');
 
                 }
 
-            // Verificar cambios en la visibilidad de la ventana del video
-                document.addEventListener("visibilitychange", function() {
+            });
 
-                    if (document.visibilityState === 'hidden') {
+            // Verificar la inactividad del usuario
+            let inactivityTime = 0;
 
-                        console.log('El usuario podría haber cambiado de pestaña o minimizado la ventana');
+            function resetInactivityTimer() {
+                inactivityTime = 0;
+            }
 
-                    } else {
-
-                        console.log('El usuario ha regresado a la ventana');
-
-                    }
-
-                });
-
-                // Verificar la inactividad del usuario
-                let inactivityTime = 0;
-
-                function resetInactivityTimer() {
-                    inactivityTime = 0;
+            function checkInactivity() {
+                inactivityTime++;
+                if (inactivityTime > 10) { // Por ejemplo, 10 segundos de inactividad
+                    console.log("El usuario podría no estar interactuando con la página");
                 }
+            }
 
-                function checkInactivity() {
-                    inactivityTime++;
-                    if (inactivityTime > 10) { // Por ejemplo, 10 segundos de inactividad
-                        console.log("El usuario podría no estar interactuando con la página");
-                    }
-                }
-
-                setInterval(checkInactivity, 1000); // Verifica la inactividad cada segundo
-                document.addEventListener('mousemove', resetInactivityTimer);
-                document.addEventListener('click', resetInactivityTimer);
-                document.addEventListener('keypress', resetInactivityTimer);
+            setInterval(checkInactivity, 1000); // Verifica la inactividad cada segundo
+            document.addEventListener('mousemove', resetInactivityTimer);
+            document.addEventListener('click', resetInactivityTimer);
+            document.addEventListener('keypress', resetInactivityTimer);
 
         </script>
     </body>

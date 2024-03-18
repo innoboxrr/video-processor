@@ -3,6 +3,7 @@
 namespace Innoboxrr\VideoProcessor\Contracts\Abstracts;
 
 use App\Models\Video;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 
 abstract class AbstractVideoService
@@ -57,7 +58,7 @@ abstract class AbstractVideoService
         return Storage::disk('s3')->temporaryUrl($path, now()->addMinutes(5));
     }
 
-    protected function getVideoByCode($code)
+    public function getVideoByCode($code)
     {
         return Video::where('code', $code)->firstOrFail();
     }
