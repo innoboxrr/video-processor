@@ -249,6 +249,8 @@
                         
                         var currentTime = data.currentTime;
 
+                        console.log('Guardar en servidor la posición del video al 10%');
+
                         window.parent.postMessage({event: '10%', data: currentTime}, '*');
 
                     break;

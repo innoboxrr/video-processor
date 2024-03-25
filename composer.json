@@ -1,5 +1,6 @@
 {
     "name": "innoboxrr/video-processor",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Innoboxrr\\VideoProcessor\\": "src/"
