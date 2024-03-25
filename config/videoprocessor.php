@@ -4,7 +4,7 @@ return [
 
 	'ffmpeg_path' => env('FFMPEG_PATH', 'C:/xampp/htdocs/github/innoboxrr/video-processor/bin/ffmpeg/ffmpeg.exe'),
 
-	'ffprobe_path' => env('FFMPEG_PATH', 'C:/xampp/htdocs/github/innoboxrr/video-processor/bin/ffmpeg/ffprobe.exe'),
+	'ffprobe_path' => env('FPROBE_PATH', 'C:/xampp/htdocs/github/innoboxrr/video-processor/bin/ffmpeg/ffprobe.exe'),
 
 	's3_url' => env('S3_URL', 'https://innoboxrr.s3.amazonaws.com'),
 
