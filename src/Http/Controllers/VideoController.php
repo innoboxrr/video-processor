@@ -12,12 +12,13 @@ class VideoController extends Controller
     
     public function __construct(VideoService $videoService)
     {
-        //$this->middleware('auth:sanctum');
+        $this->middleware('auth:sanctum')->except(['player', 'playlist', 'key']);
         $this->videoService = $videoService;
     }
 
     public function player($code) 
-    {
+    {   
+        $this->videoService->authorization();
         return view('videoprocessor::player', [
             'video' => $this->videoService->getVideoByCode($code)
         ]);

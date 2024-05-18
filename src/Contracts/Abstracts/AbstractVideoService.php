@@ -21,8 +21,6 @@ abstract class AbstractVideoService
 
     public function __construct()
     {
-        $this->authorization();
-        
         $this->ffmpegPath = config('videoprocessor.ffmpeg_path'); 
 
         config(['laravel-ffmpeg.ffmpeg.binaries' => $this->ffmpegPath]);
