@@ -3,7 +3,7 @@
 namespace Innoboxrr\VideoProcessor\Contracts\Abstracts;
 
 use App\Models\Video;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 abstract class AbstractVideoService
@@ -21,6 +21,8 @@ abstract class AbstractVideoService
 
     public function __construct()
     {
+        $this->authorization();
+        
         $this->ffmpegPath = config('videoprocessor.ffmpeg_path'); 
 
         config(['laravel-ffmpeg.ffmpeg.binaries' => $this->ffmpegPath]);
@@ -34,6 +36,43 @@ abstract class AbstractVideoService
         $this->cloudfrontUrl = config('videoprocessor.cloudfront_url');
 
         $this->checkDependencies();
+    }
+
+    public function authorization()
+    {
+        if(auth()->check()) return true;
+
+        if(request()->has('guest_token') && $this->validateGuestToken(request()->get('guest_token'))) {
+            return true;
+        }
+
+        throw new \Exception('Not authorized.');
+    }
+
+    public static function getHashSecret()
+    {
+        $expiration = now()->addMinutes(30)->timestamp;
+        $secret = config('videoprocessor.guest_token_secret');
+        $hashSecret = Hash::make($secret);
+
+        return encrypt("{$expiration}|{$hashSecret}");
+    }
+
+    public function validateGuestToken($token)
+    {
+        try {
+            $token = decrypt($token);
+            [$expiration, $hashSecret] = explode('|', $token);
+            if($expiration < now()->timestamp) {
+                return false;
+            }
+            $secret = config('videoprocessor.guest_token_secret');
+            if(Hash::check($secret, $hashSecret)) {
+                return true;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     private function checkDependencies()

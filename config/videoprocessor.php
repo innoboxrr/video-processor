@@ -12,6 +12,8 @@ return [
 
     'video_path' => env('VIDEO_PATH', 'videos'),
 
+	'guest_token_secret' => env('VIDEOPROCESSOR_GUEST_TOKEN_SECRET', 'secret'),
+
 	// Player settings
 
 	'video_watermark' => env('VIDEO_WATERMARK'),

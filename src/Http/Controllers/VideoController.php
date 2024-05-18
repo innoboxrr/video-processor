@@ -12,7 +12,7 @@ class VideoController extends Controller
     
     public function __construct(VideoService $videoService)
     {
-        $this->middleware('auth:sanctum');
+        //$this->middleware('auth:sanctum');
         $this->videoService = $videoService;
     }
 

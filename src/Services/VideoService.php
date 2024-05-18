@@ -78,7 +78,8 @@ class VideoService extends AbstractVideoService
 
                 return route('videoprocessor.key', [
                     'code' => $video->code,
-                    'key' => $key
+                    'key' => $key,
+                    'guest_token' => request()->guest_token
                 ]);
 
             })
@@ -93,7 +94,8 @@ class VideoService extends AbstractVideoService
 
                 return route('videoprocessor.playlist', [
                     'code' => $video->code,
-                    'filename' => $playlistFilename
+                    'filename' => $playlistFilename,
+                    'guest_token' => request()->guest_token
                 ]);
 
             });

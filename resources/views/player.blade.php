@@ -55,7 +55,7 @@
                 <!-- SOURCE -->
                 <source 
                     type="application/x-mpegURL"
-                    src="{{ route('videoprocessor.playlist', ['code' => $video->code, 'filename' => 'master.m3u8']) }}">
+                    src="{{ route('videoprocessor.playlist', ['code' => $video->code, 'filename' => 'master.m3u8', 'guest_token' => request()->guest_token]) }}">
 
                 <!-- CHAPTERS -->
                 {{--
@@ -96,7 +96,7 @@
                     title: "{{ $video->title }}", 
                 @endif
 
-                url: "{{ route('videoprocessor.player', ['code' => $video->code]) }}",
+                url: "{{ route('videoprocessor.player', ['code' => $video->code, 'guest_token' => request()->guest_token]) }}",
 
                 @if($video->embed) 
                     embed: '<iframe src="{{ $video->embed }}" width="640" height="360" frameborder="0" allowfullscreen></iframe>',
@@ -366,7 +366,8 @@
                 sources: [{
                     src: '{{ route('videoprocessor.playlist', [
                         'code' => $video->code,
-                        'filename' => 'master.m3u8'
+                        'filename' => 'master.m3u8',
+                        'guest_token' => request()->guest_token
                     ]) }}',
                     type: 'application/x-mpegURL'
                 }],
