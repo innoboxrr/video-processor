@@ -24,8 +24,8 @@ class VideoService extends AbstractVideoService
             'status' => 'processing_started',
         ]);
 
-        $formats = config('video.formats');
-        $enabledFormats = config('video.enabled_formats');
+        $formats = config('videoprocessor.formats');
+        $enabledFormats = config('videoprocessor.enabled_formats');
 
         // Exporta el video a HLS.
         $conv = FFMpeg::fromDisk('s3')
