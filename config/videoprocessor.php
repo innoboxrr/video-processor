@@ -2,6 +2,27 @@
 
 return [
 
+	'formats' => [
+        'low' => [
+            'bitrate' => 500,
+            'scale' => [480, 360]
+        ],
+        'mid' => [
+            'bitrate' => 1000,
+            'scale' => [960, 720]
+        ],
+        'high' => [
+            'bitrate' => 2000,
+            'scale' => [1920, 1080]
+        ],
+        'super' => [
+            'bitrate' => 3000,
+            'scale' => [2560, 1920]
+        ],
+    ],
+	
+    'enabled_formats' => ['low', 'mid', 'high'],
+
 	'ffmpeg_path' => env('FFMPEG_PATH', 'C:/xampp/htdocs/github/innoboxrr/video-processor/bin/ffmpeg/ffmpeg.exe'),
 
 	'ffprobe_path' => env('FPROBE_PATH', 'C:/xampp/htdocs/github/innoboxrr/video-processor/bin/ffmpeg/ffprobe.exe'),

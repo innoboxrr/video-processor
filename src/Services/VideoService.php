@@ -24,11 +24,8 @@ class VideoService extends AbstractVideoService
             'status' => 'processing_started',
         ]);
 
-        // Configura el formato de video a X264.
-        $lowBitrate = (new X264)->setKiloBitrate(500);
-        $midBitrate = (new X264)->setKiloBitrate(1000);
-        $highBitrate = (new X264)->setKiloBitrate(2000);
-        $superBitrate = (new X264)->setKiloBitrate(3000);
+        $formats = config('video.formats');
+        $enabledFormats = config('video.enabled_formats');
 
         // Exporta el video a HLS.
         $conv = FFMpeg::fromDisk('s3')
@@ -44,20 +41,20 @@ class VideoService extends AbstractVideoService
             ->setKeyFrameInterval(48) 
             ->withRotatingEncryptionKey(function ($filename, $contents) use ($video) {
                 Storage::disk('s3')->put($video->s3_keys_path . DIRECTORY_SEPARATOR . $filename, $contents);
-            })
-            ->addFormat($lowBitrate, function($media) {
-                $media->scale(480, 360);
-            })
-            ->addFormat($midBitrate, function($media) {
-                $media->scale(960, 720);
-            })
-            ->addFormat($highBitrate, function ($media) {
-                $media->scale(1920, 1080);
-            })
-            ->addFormat($superBitrate, function($media) {
-                $media->scale(2560, 1920);
-            })
-            ->save($video->s3_hls_master);
+            });
+
+        // Añadir los formatos habilitados
+        foreach ($enabledFormats as $format) {
+            if (isset($formats[$format])) {
+                $bitrate = (new X264)->setKiloBitrate($formats[$format]['bitrate']);
+                $scale = $formats[$format]['scale'];
+                $conv->addFormat($bitrate, function($media) use ($scale) {
+                    $media->scale($scale[0], $scale[1]);
+                });
+            }
+        }
+
+        $conv->save($video->s3_hls_master);
 
         FFMpeg::cleanupTemporaryFiles();
 
