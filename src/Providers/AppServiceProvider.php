@@ -8,7 +8,9 @@ use Innoboxrr\VideoProcessor\Http\Middleware\Cors;
 // use Illuminate\Console\Scheduling\Schedule;
 use Innoboxrr\VideoProcessor\Console\Commands\{
     ProcessVideoCommand,
-    VimeoVideoUploader
+    VimeoVideoUploader,
+    GenerateSubtitlesCommand,
+    TranslateSubtitlesCommand
 };
 
 class AppServiceProvider extends ServiceProvider
@@ -43,6 +45,8 @@ class AppServiceProvider extends ServiceProvider
         $this->commands([
             ProcessVideoCommand::class,
             VimeoVideoUploader::class,
+            GenerateSubtitlesCommand::class,
+            TranslateSubtitlesCommand::class
         ]);
 
     }

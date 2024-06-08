@@ -27,6 +27,8 @@ return [
 
 	'ffprobe_path' => env('FPROBE_PATH', 'C:/xampp/htdocs/github/innoboxrr/video-processor/bin/ffmpeg/ffprobe.exe'),
 
+    'ffmpeg_threads' => env('FFMPEG_THREADS', 12),
+
 	's3_url' => env('S3_URL', 'https://innoboxrr.s3.amazonaws.com'),
 
     'cloudfront_url' => env('CLOUDFRONT_URL', 'd1st6n2eacne1j.cloudfront.net'),

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use FFMpeg\Format\Video\X264;
+use Innoboxrr\VideoProcessor\Support\Classes\GenerateSubtitles as GenerateSubtitlesClass;
 
 class VideoService extends AbstractVideoService
 {
@@ -64,6 +65,20 @@ class VideoService extends AbstractVideoService
         ]);
 
         return 0;
+    }
+
+    public function generateSubtitles($videoId)
+    {
+        $video = Video::findOrFail($videoId);
+        $subtitlesGenerator = new GenerateSubtitlesClass($video);
+        $subtitlesGenerator->generate();
+    }
+
+    public function translateSubtitles($videoId, $sourceLanguage, $targetLanguage)
+    {
+        $video = Video::findOrFail($videoId);
+        $subtitlesGenerator = new GenerateSubtitlesClass($video);
+        $subtitlesGenerator->translate($sourceLanguage, $targetLanguage);
     }
 
     public function playerResponse($code, $filename) 
