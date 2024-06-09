@@ -37,6 +37,14 @@ return [
 
 	'guest_token_secret' => env('VIDEOPROCESSOR_GUEST_TOKEN_SECRET', 'secret'),
 
+    // VTT
+
+    'vtt' => [
+
+        'auto-generate' => env('VTT_AUTO_GENERATE', 1),
+
+    ],
+
 	// Player settings
 
 	'video_watermark' => env('VIDEO_WATERMARK'),

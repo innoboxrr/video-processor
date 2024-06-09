@@ -16,17 +16,23 @@ class TranslateSubtitlesJob implements ShouldQueue
 
     protected $video;
 
-    public function __construct($videoId)
+    protected $sourceLanguage;
+    
+    protected $targetLanguage;
+
+    public function __construct($videoId, $sourceLanguage, $targetLanguage)
     {
         $this->video = Video::findOrFail($videoId);
+        $this->sourceLanguage = $sourceLanguage;
+        $this->targetLanguage = $targetLanguage;
     }
 
     public function handle()
     {
         Artisan::call('video:translate-subtitles', [
             'videoId' => $this->video->id,
-            'sourceLanguage' => 'en',
-            'targetLanguage' => 'es',
+            'sourceLanguage' => $this->sourceLanguage,
+            'targetLanguage' => $this->targetLanguage,
         ]);
     }
 }

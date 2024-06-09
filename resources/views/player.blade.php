@@ -61,26 +61,19 @@
 
 
                 <!-- CAPTIONS -->
-                <track 
-                    kind="captions" 
-                    src="{{ $video->s3_original_vtt_url }}" 
-                    srclang="es" 
-                    label="Spanish" 
-                    default />
-                
-                <track 
-                    kind="captions" 
-                    src="https://s3.us-east-1.amazonaws.com/innoboxrr.dbcloud/videos/4a97c614-9a9d-412c-ba13-1d052563d47c/vtts/en.vtt?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQCivG0gK%2BRMCqD8NEZ3u5cs2Sz9TVLjmFghtx3tJUB%2FgQIgaLSEy9NnU%2BAuUfwvKKex%2F%2F4DDqGJRwSrbtb9HBPA5z4q5AIIGxAFGgw0MTkzNzA4MjExODMiDGJwtEr3SFDH0I0d3SrBAswFGl3DaRGFN4BZdH7m7JKtBgR2%2Ba24IFP2hjlk9EGf%2FnSysH3ViQgJ8yMe0AhWN%2F9XzF0xBWlxItM3kc8fnfrSKSRuDgZ7oG0xxXnKzTySZtlcZ2O60K391DXtJU7aO8HtFCndA4JZR2556Vue05P3sr8rC7uEq9TO9eTu3k6Ljh7geYnu%2BbksmWeIz9XN9AlW%2BA2MxwlMLeaBOLA8%2BRkg5%2B1KnHfxeemTPl3sMeouR8WXpnEkYLgY5bhpfp5ceoqN0lzFIZ8%2BXXtRP1Vl3Kdto8zCNlP0k4RbkCte7IuZ9b%2FBVmHfnMc0dHgHYEMr6Ta52dJG9A0xxjSASPMD%2FE1xXYjq%2Bdv9wA3hyoR7yw%2B5Gu1FE%2FqQuoFSqhd8hBT%2FSK1kAMX8s3fnkUIItIvFFk8LMKtPFOBJegymraBGn4nSVTCHuZKzBjqzAh7JZEczQLbkp9%2FxxlTcLpt1seoENIVlZKQGBucQTyk%2BDW2yk%2ByeSqV%2FTSk7Ju4BwNfd8uJFKrifi0UjIYq7yIsVcDPLLiu1JvmdAlXZIuJTNAxHj%2FaNLDuFHi4UGifwwGvWRJveBdtcEx36FE5YHEX%2BTSGV0KM3aI8imEN8SEonAZkupR8rfCSuDgNm1zX3b5Q0wnUd0%2FptzgOdAK1y3qAwb0xtQRM5%2FgPebdPMh%2BEOIOss1Y78XNPWpsdw2Uw9LUETXJZD8LloONHzNzT6lyzneaPUf1UpUYKzVTA7sIV12VZa8lfUckJuO9sUS31IosPJgRL7D6kFBqbQJR9ckABYQrFzbmYeLTnHU01mtDeeb0Sw%2BwfnJdekzUeUSPic%2FDKGBnJVoPzVQP%2FZQPOKMC3EDjY%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240608T181452Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAWDJDS4Y75YXNUOQY%2F20240608%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=01c83d6c90690113c6b46833756b1dad8b7c3dd14dc52c4e80e3038d9b62c95e" 
-                    srclang="en" 
-                    label="English" />
+                @foreach($video->subtitles as $subtitle)
 
-                <track  
-                    kind="captions"
-                    src="https://s3.us-east-1.amazonaws.com/innoboxrr.dbcloud/videos/4a97c614-9a9d-412c-ba13-1d052563d47c/vtts/fr.vtt?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQCivG0gK%2BRMCqD8NEZ3u5cs2Sz9TVLjmFghtx3tJUB%2FgQIgaLSEy9NnU%2BAuUfwvKKex%2F%2F4DDqGJRwSrbtb9HBPA5z4q5AIIGxAFGgw0MTkzNzA4MjExODMiDGJwtEr3SFDH0I0d3SrBAswFGl3DaRGFN4BZdH7m7JKtBgR2%2Ba24IFP2hjlk9EGf%2FnSysH3ViQgJ8yMe0AhWN%2F9XzF0xBWlxItM3kc8fnfrSKSRuDgZ7oG0xxXnKzTySZtlcZ2O60K391DXtJU7aO8HtFCndA4JZR2556Vue05P3sr8rC7uEq9TO9eTu3k6Ljh7geYnu%2BbksmWeIz9XN9AlW%2BA2MxwlMLeaBOLA8%2BRkg5%2B1KnHfxeemTPl3sMeouR8WXpnEkYLgY5bhpfp5ceoqN0lzFIZ8%2BXXtRP1Vl3Kdto8zCNlP0k4RbkCte7IuZ9b%2FBVmHfnMc0dHgHYEMr6Ta52dJG9A0xxjSASPMD%2FE1xXYjq%2Bdv9wA3hyoR7yw%2B5Gu1FE%2FqQuoFSqhd8hBT%2FSK1kAMX8s3fnkUIItIvFFk8LMKtPFOBJegymraBGn4nSVTCHuZKzBjqzAh7JZEczQLbkp9%2FxxlTcLpt1seoENIVlZKQGBucQTyk%2BDW2yk%2ByeSqV%2FTSk7Ju4BwNfd8uJFKrifi0UjIYq7yIsVcDPLLiu1JvmdAlXZIuJTNAxHj%2FaNLDuFHi4UGifwwGvWRJveBdtcEx36FE5YHEX%2BTSGV0KM3aI8imEN8SEonAZkupR8rfCSuDgNm1zX3b5Q0wnUd0%2FptzgOdAK1y3qAwb0xtQRM5%2FgPebdPMh%2BEOIOss1Y78XNPWpsdw2Uw9LUETXJZD8LloONHzNzT6lyzneaPUf1UpUYKzVTA7sIV12VZa8lfUckJuO9sUS31IosPJgRL7D6kFBqbQJR9ckABYQrFzbmYeLTnHU01mtDeeb0Sw%2BwfnJdekzUeUSPic%2FDKGBnJVoPzVQP%2FZQPOKMC3EDjY%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240608T181454Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAWDJDS4Y75YXNUOQY%2F20240608%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=7840b5c0a4bfc95509d9ca9901de7911752c25e86fb1301e5d7e87cb0dcfbf70"
-                    srclang="fr"                
-                    label="Francés" />
+                    <track 
+                        kind="captions" 
+                        src="{{ $subtitle->vtt_url }}" 
+                        srclang="{{ $subtitle->language->code }}" 
+                        label="{{ $subtitle->language->name }}" 
+                        @if($video->language_id == $subtitle->language_id) default @endif />
+                
+                @endforeach
 
                 <!-- CHAPTERS -->
+                {{--
                 <track 
                     kind="chapters" 
                     src="/plugins/videojs8/examples/chapters/test-en.vtt" 
@@ -90,6 +83,7 @@
                     kind="chapters" 
                     src="/plugins/videojs8/examples/chapters/test-es.vtt" 
                     srclang="es" />
+                --}}
             </video>
         </div>
 

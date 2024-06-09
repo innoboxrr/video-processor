@@ -21,6 +21,7 @@ class GenerateSubtitles
 
     public function generate()
     {
+        set_time_limit(600);
 
         $tempDir = storage_path('app/temp/subtitles') . '/' . $this->video->id;
         $tempVideoPath = $tempDir . '/video.mp4';
@@ -56,20 +57,33 @@ class GenerateSubtitles
         $apiKey = config('services.openai.api_key');
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $apiKey,
-        ])->attach(
-            'file', file_get_contents($tempAudioPath), 'audio.mp3'
-        )->post('https://api.openai.com/v1/audio/transcriptions', [
+        ])
+        ->timeout(600)
+        ->attach( 'file', file_get_contents($tempAudioPath), 'audio.mp3' )
+        ->post('https://api.openai.com/v1/audio/transcriptions', [
             'model' => 'whisper-1',
             'response_format' => 'vtt',
-            'prompt' => 'This is a recording about DALL-E and GPT-3, by Boško Bezik',
+            'prompt' => 'Transcribe the following audio file',
         ]);
 
         if ($response->successful()) {
             // Guardar el archivo VTT generado
             file_put_contents($vttPath, $response->body());
 
+            // Elimianr archivos actuales
+            Storage::disk('s3')->delete($this->video->s3_original_vtt_path);
+            Storage::disk('s3')->delete($this->video->s3_vtts_path . '/' . $this->video->language->code . '.vtt');
+
             // Subir el archivo VTT a S3
             Storage::disk('s3')->put($this->video->s3_original_vtt_path, file_get_contents($vttPath));
+            Storage::disk('s3')->put($this->video->s3_vtts_path . '/' . $this->video->language->code . '.vtt' , file_get_contents($vttPath));
+
+            // Registrar subt´pitulo
+            $this->video->subtitles()->firstOrCreate([
+                'language_id' => $this->video->language->id,
+                'type' => 'auto',
+            ]);
+
         } else {
             throw new \Exception('Error al generar subtítulos: ' . $response->body());
         }
