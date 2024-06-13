@@ -86,8 +86,7 @@ class VideoService extends AbstractVideoService
 
         $path = $video->s3_hls_path . '/' . $filename;
 
-        // Si el archivo no existe, devolver 404
-        if (!Storage::disk('s3')->exists($path)) {
+        if ($video->status != 'available_for_viewing') {
             abort(404);
         }
 
@@ -117,6 +116,9 @@ class VideoService extends AbstractVideoService
     public function keyResponse($code, $key) 
     {
         $video = $this->getVideoByCode($code);
+        if ($video->status != 'available_for_viewing') {
+            abort(404);
+        }
         $path = $video->s3_keys_path . '/' . $key;
         return Storage::disk('s3')->download($path);
     }

@@ -97,6 +97,12 @@ abstract class AbstractVideoService
 
     public function getVideoByCode($code)
     {
+        // Ver si combine con cache
+        /*
+        return cache()->remember("video_by_code_{$code}", now()->addMinutes(5), function() use ($code) {
+            return Video::where('code', $code)->firstOrFail();
+        });
+        */
         return Video::where('code', $code)->firstOrFail();
     }
 
