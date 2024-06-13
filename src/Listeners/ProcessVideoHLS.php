@@ -19,6 +19,6 @@ class ProcessVideoHLS
         $videoId = $event->videoId;
 
         // Llamada al comando
-        ProcessVideoJob::dispatch($videoId);
+        ProcessVideoJob::dispatch($videoId)->delay(now()->addMinutes(1));
     }
 }

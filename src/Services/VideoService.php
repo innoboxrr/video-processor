@@ -86,6 +86,11 @@ class VideoService extends AbstractVideoService
 
         $path = $video->s3_hls_path . '/' . $filename;
 
+        // Si el archivo no existe, devolver 404
+        if (!Storage::disk('s3')->exists($path)) {
+            abort(404);
+        }
+
         return FFMpeg::dynamicHLSPlaylist()
             ->fromDisk('s3')
             ->open($path)
