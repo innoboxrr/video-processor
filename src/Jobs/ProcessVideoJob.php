@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Artisan;
+use Innoboxrr\VideoProcessor\Services\VideoService;
 
 class ProcessVideoJob implements ShouldQueue
 {
@@ -21,16 +21,14 @@ class ProcessVideoJob implements ShouldQueue
         $this->video = Video::findOrFail($videoId);
     }
 
-    public function handle()
+    public function handle(VideoService $videoService)
     {
 
         $this->video->update([
+            'cloud' => 'aws',
             'status' => 'queue_for_processing',
         ]);
 
-        // Llamada al comando
-        Artisan::call('video:process', [
-            'videoId' => $this->video->id
-        ]);
+        $videoService->processVideo($this->video->id);
     }
 }

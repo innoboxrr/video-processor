@@ -60,7 +60,6 @@ class VideoService extends AbstractVideoService
         FFMpeg::cleanupTemporaryFiles();
 
         DB::table('videos')->where('id', $video->id)->update([
-            'cloud' => 'aws',
             'status' => 'available_for_viewing'
         ]);
 
