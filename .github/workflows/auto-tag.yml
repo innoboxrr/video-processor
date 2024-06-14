@@ -8,19 +8,12 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
+      - name: Auto increment tag
+        id: tag
+        uses: sophiware/actions-auto-increment-tag@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Get next version
-          uses: reecetech/version-increment@2024.4.3
-          id: version
-          with:
-            scheme: semver
-            increment: patch
-
-        - name: Build image
-          uses: docker/build-push-action@v2
-          with:
-            push: false
-            tags: "innoboxrr/video-processor:${{ steps.version.outputs.version }}"
-            context: .
+      - name: Container tag
+        run: |
+          docker tag innoboxrr/video-processor innoboxrr/video-processor:${{ steps.tag.outputs.tag }}
