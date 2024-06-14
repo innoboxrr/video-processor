@@ -11,7 +11,7 @@ jobs:
 
         steps:
         - name: Checkout repository
-          uses: actions/checkout@v2
+          uses: actions/checkout@v3
 
         - name: Set up Python
           uses: actions/setup-python@v2
@@ -21,10 +21,10 @@ jobs:
         - name: Run tag increment script
           run: python .actions/increment_version.py
           env:
-              GH_TOKEN: ${{ secrets.GH_TOKEN }}
+              WORKFLOW_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
 
         - name: Push changes
           run: |
               git push origin --tags
           env:
-              GH_TOKEN: ${{ secrets.GH_TOKEN }}
+              WORKFLOW_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
