@@ -34,10 +34,9 @@ jobs:
 
         - name: Create new tag
           env:
-            # GITHUB_TOKEN is automatically provided by GitHub Actions and doesn't need to be created manually
-            GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+            PAT_TOKEN: ${{ secrets.WORKFLOW_TOKEN  }}
           run: |
               git config --global user.name "github-actions"
               git config --global user.email "github-actions@github.com"
               git tag ${{ steps.bump_version.outputs.new_tag }}
-              git push origin ${{ steps.bump_version.outputs.new_tag }}
+              git push https://x-access-token:${{ secrets.WORKFLOW_TOKEN  }}@github.com/${{ github.repository }}.git ${{ steps.bump_version.outputs.new_tag }}
