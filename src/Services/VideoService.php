@@ -14,7 +14,7 @@ class VideoService extends AbstractVideoService
 {
 
     public function processVideo($videoId)
-    {   
+    {
         $video = Video::findOrFail($videoId);
 
         // Eliminar directorios en S3 (no importa si no existen)
@@ -38,8 +38,8 @@ class VideoService extends AbstractVideoService
                     'status' => $percentage == 100 ? 'processing_completed' : 'processing'
                 ]);
             })
-            ->setSegmentLength(10) 
-            ->setKeyFrameInterval(48) 
+            ->setSegmentLength(10)
+            ->setKeyFrameInterval(48)
             ->withRotatingEncryptionKey(function ($filename, $contents) use ($video) {
                 Storage::disk('s3')->put($video->s3_keys_path . DIRECTORY_SEPARATOR . $filename, $contents);
             });
@@ -50,7 +50,7 @@ class VideoService extends AbstractVideoService
                 $bitrate = (new X264)->setKiloBitrate($formats[$format]['bitrate']);
                 $scale = $formats[$format]['scale'];
                 $conv->addFormat($bitrate, function($media) use ($scale) {
-                    $media->scale($scale[0], $scale[1]);
+                    $media->scale($scale[0], $scale[1], 'keep_aspect_ratio');
                 });
             }
         }
@@ -80,7 +80,7 @@ class VideoService extends AbstractVideoService
         $subtitlesGenerator->translate($sourceLanguage, $targetLanguage);
     }
 
-    public function playerResponse($code, $filename) 
+    public function playerResponse($code, $filename)
     {
         $video = $this->getVideoByCode($code);
 
@@ -113,7 +113,7 @@ class VideoService extends AbstractVideoService
             });
     }
 
-    public function keyResponse($code, $key) 
+    public function keyResponse($code, $key)
     {
         $video = $this->getVideoByCode($code);
         if ($video->status != 'available_for_viewing') {
