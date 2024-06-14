@@ -1,8 +1,13 @@
 import subprocess
 
 def get_latest_tag():
-    result = subprocess.run(['git', 'describe', '--tags', '--abbrev=0'], stdout=subprocess.PIPE)
-    return result.stdout.decode('utf-8').strip()
+    result = subprocess.run(['git', 'describe', '--tags', '--abbrev=0'], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    tag = result.stdout.decode('utf-8').strip()
+    print(f"Latest tag: {tag}")
+    #if not tag:
+        #return '0.0.0'  # return an initial version if no tags are found
+    return tag
+
 
 def increment_version(version):
     major, minor, patch = map(int, version.split('.'))
