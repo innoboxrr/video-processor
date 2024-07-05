@@ -22,8 +22,7 @@ Route::get('{code}/original-vtt', 'VttController@getOriginalVtt')
 	->name('get.original.vtt');
 
 Route::post('auto-generate-original-vtt', 'VttController@autoGenerateOriginalVtt')
-    ->name('auto.generate.original.vtt')
-	->middleware('throttle:1,120');
+    ->name('auto.generate.original.vtt');
 
 Route::post('upload-original-vtt', 'VttController@uploadOriginalVtt')
     ->name('upload.original.vtt');
@@ -37,8 +36,7 @@ Route::get('{code}/translated-vtt/{filename}', 'VttController@getTranslatedVtt')
 	->name('get.translated.vtt');
 
 Route::post('auto-generate-translated-vtt', 'VttController@autoGenerateTranslatedVtt')
-    ->name('auto.generate.translated.vtt')
-	->middleware('throttle:1,120');
+    ->name('auto.generate.translated.vtt');
 
 Route::post('upload-translated-vtt', 'VttController@uploadTranslatedVtt')
     ->name('upload.translated.vtt');
