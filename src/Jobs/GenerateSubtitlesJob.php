@@ -9,22 +9,33 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class GenerateSubtitlesJob implements ShouldQueue
+class GenerateSubtitlesJob implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $video;
+    protected $videoId;
+
+    public $uniqueFor = 3600;
 
     public function __construct($videoId)
     {
-        $this->video = Video::findOrFail($videoId);
+        $this->videoId = $videoId;
+        $this->onQueue('video_processor');
+    }
+
+    public function uniqueId(): string
+    {
+        return 'generate-subtitles-' . $this->videoId;
     }
 
     public function handle()
     {
+        $video = Video::findOrFail($this->videoId);
+
         Artisan::call('video:generate-subtitles', [
-            'videoId' => $this->video->id
+            'videoId' => $video->id
         ]);
     }
 }

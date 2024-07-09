@@ -9,12 +9,15 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class TranslateSubtitlesJob implements ShouldQueue
+class TranslateSubtitlesJob implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $video;
+    protected $videoId;
+
+    public $uniqueFor = 3600;
 
     protected $sourceLanguage;
     
@@ -22,15 +25,23 @@ class TranslateSubtitlesJob implements ShouldQueue
 
     public function __construct($videoId, $sourceLanguage, $targetLanguage)
     {
-        $this->video = Video::findOrFail($videoId);
+        $this->videoId = $videoId;
         $this->sourceLanguage = $sourceLanguage;
         $this->targetLanguage = $targetLanguage;
+        $this->onQueue('video_processor');
+    }
+
+    public function uniqueId(): string
+    {
+        return 'translate-subtitles-' . $this->videoId;
     }
 
     public function handle()
     {
+        $video = Video::findOrFail($this->videoId);
+
         Artisan::call('video:translate-subtitles', [
-            'videoId' => $this->video->id,
+            'videoId' => $video->id,
             'sourceLanguage' => $this->sourceLanguage,
             'targetLanguage' => $this->targetLanguage,
         ]);

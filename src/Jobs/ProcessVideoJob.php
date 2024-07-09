@@ -19,16 +19,15 @@ class ProcessVideoJob implements ShouldQueue, ShouldBeUnique
 
     public $uniqueFor = 3600;
 
-    public $queue = 'video_processor';
-
     public function __construct($videoId)
     {
         $this->videoId = $videoId;
+        $this->onQueue('video_processor');
     }
 
     public function uniqueId(): string
     {
-        return $this->videoId;
+        return 'process-video-' . $this->videoId;
     }
 
     public function handle(VideoService $videoService)
