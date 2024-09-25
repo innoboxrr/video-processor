@@ -102,7 +102,7 @@ class VideoService extends AbstractVideoService
             })
             ->setMediaUrlResolver(function ($mediaFilename) use ($video) {
                 $path = $video->s3_hls_path . '/' . $mediaFilename;
-                return Storage::disk('s3')->temporaryUrl($path, now()->addMinutes(5));
+                return Storage::disk('s3')->temporaryUrl($path, now()->addMinutes(value: 240));
             })
             ->setPlaylistUrlResolver(function ($playlistFilename) use ($video) {
                 return route('videoprocessor.playlist', [
