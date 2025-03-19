@@ -33,7 +33,7 @@ class TranslateSubtitlesJob implements ShouldQueue, ShouldBeUnique
 
     public function uniqueId(): string
     {
-        return 'translate-subtitles-' . $this->videoId;
+        return 'translate-subtitles-' . $this->videoId . '-' . $this->sourceLanguage . '-' . $this->targetLanguage;
     }
 
     public function handle()
