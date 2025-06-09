@@ -1,6 +1,6 @@
 <?php
 
-namespace Innoboxrr\VideoProcessor\Support\Processors;
+namespace Innoboxrr\VideoProcessor\Support\Helpers;
 
 use Illuminate\Support\Facades\URL;
 

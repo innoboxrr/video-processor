@@ -43,12 +43,15 @@ return [
     ],
 	
     'enabled_formats' => ['low', 'mid', 'high'],
+
 	'ffmpeg_path' => env('FFMPEG_PATH', '/usr/bin/ffmpeg'),
 	'ffprobe_path' => env('FPROBE_PATH', '/usr/bin/ffprobe'),
     'ffmpeg_threads' => env('FFMPEG_THREADS', 12),
+
 	's3_url' => env('S3_URL', 'https://innoboxrr.s3.amazonaws.com'),
     'cloudfront_url' => env('CLOUDFRONT_URL', 'd1st6n2eacne1j.cloudfront.net'),
     'video_path' => env('VIDEO_PATH', 'videos'),
+
 	'guest_token_secret' => env('VIDEOPROCESSOR_GUEST_TOKEN_SECRET', 'secret'),
 
     // VTT
