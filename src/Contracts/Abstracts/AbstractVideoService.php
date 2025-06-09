@@ -99,4 +99,15 @@ abstract class AbstractVideoService
 
         return $videoModel::where('code', $code)->firstOrFail();
     }
+
+    public function getVideoById(int $id): object
+    {
+        $videoModel = config('videoprocessor.video_class', 'App\\Models\\Video');
+
+        if (!class_exists($videoModel)) {
+            throw new \Exception("Model class for 'video' is not defined or does not exist.");
+        }
+
+        return $videoModel::findOrFail($id);
+    }
 }

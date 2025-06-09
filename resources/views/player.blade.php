@@ -52,11 +52,12 @@
                 controls 
                 preload="auto" 
                 playsinline 
+                crossorigin="anonymous"
                 @if($video->thumbnail) poster="{{ $video->thumbnail }}" @endif>
                 <!-- SOURCE -->
                 <source 
                     type="application/x-mpegURL"
-                    src="{{ route('videoprocessor.playlist', ['code' => $video->code, 'filename' => 'master.m3u8', 'guest_token' => request()->guest_token]) }}">
+                    src="{{ route('videoprocessor.playlist', ['code' => $video->code, 'filename' => 'original.m3u8', 'guest_token' => request()->guest_token]) }}">
                 
 
 
