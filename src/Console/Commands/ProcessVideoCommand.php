@@ -8,30 +8,14 @@ use Innoboxrr\VideoProcessor\Jobs\ProcessVideoJob;
 
 class ProcessVideoCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'video:process-video-job {videoId}';
+    protected $signature = 'video:process {videoId}
+                            {--random= : Optional random string to ensure uniqueness}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Command description';
+    protected $description = 'Commd description';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
-        // Recuperar el video por su id
-        $video = Video::findOrFail($this->argument('videoId'));
-
-        // Despachar el trabajo para procesar el video
-        ProcessVideoJob::dispatch($video->id);
+        ProcessVideoJob::dispatch($this->argument('videoId'), $this->option('random'))
+            ->onQueue('video_processor');
     }
 }
-

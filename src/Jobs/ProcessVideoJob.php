@@ -16,24 +16,23 @@ class ProcessVideoJob implements ShouldQueue, ShouldBeUnique
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $videoId;
-
+    protected $random;
     public $uniqueFor = 3600;
 
-    public function __construct($videoId)
+    public function __construct($videoId, $random = null)
     {
         $this->videoId = $videoId;
-        $this->onQueue('video_processor');
+        $this->random = $random;
     }
 
     public function uniqueId(): string
     {
-        return 'process-video-' . $this->videoId;
+        return 'process-video-' . $this->videoId . ($this->random ? '-' . $this->random : '');
     }
 
     public function handle(VideoService $videoService)
     {
         $video = Video::findOrFail($this->videoId);
-
         $video->update([
             'cloud' => 'aws',
             'status' => 'queue_for_processing',
