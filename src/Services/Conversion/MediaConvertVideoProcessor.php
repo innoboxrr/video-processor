@@ -52,13 +52,9 @@ class MediaConvertVideoProcessor
                 'VideoId' => $video->id,
             ],
             'Notifications' => [
-                'TopicArn' => config('videoprocessor.mediaconvert.notification_topic_arn'),
-                'Events' => [
-                    'COMPLETED',
-                    'ERROR',
-                    'PROGRESSING',
-                ],
-
+                'Progressing' => config('videoprocessor.mediaconvert.notification_topic_arn'),
+                'Complete' => config('videoprocessor.mediaconvert.notification_topic_arn'),
+                'Error' => config('videoprocessor.mediaconvert.notification_topic_arn'),
             ],
         ]);
 
