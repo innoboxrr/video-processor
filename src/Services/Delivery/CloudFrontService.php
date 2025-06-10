@@ -118,28 +118,33 @@ class CloudFrontService
         $processed = [];
 
         foreach ($lines as $line) {
-            $line = trim($line);
 
-            if ($line === '') {
-                $processed[] = '';
-                continue;
+            // 🔐 Procesar claves
+            if (Str::contains($line, '#EXT-X-KEY')) {
+                // Reemplaza URI="clave" con ruta absoluta
+                $line = preg_replace_callback('/URI="([^"]+)"/', function ($matches) use ($code) {
+                    $key = $matches[1];
+                    $keyUrl = route('videoprocessor.key', ['code' => $code, 'key' => $key]);
+                    return 'URI="' . $keyUrl . '"';
+                }, $line);
+
+                $processed[] = $line;
             }
 
-            // Si es otro .m3u8 (rendition), usar ruta de Laravel
-            if (Str::endsWith($line, '.m3u8')) {
-                $route = route('videoprocessor.playlist', [
-                    'code' => $code,
-                    'filename' => $line,
-                ]);
+            // 📺 Renditions m3u8
+            elseif (Str::endsWith($line, '.m3u8')) {
+                $route = route('videoprocessor.playlist', ['code' => $code, 'filename' => $line]);
                 $processed[] = $route;
             }
-            // Si es fragmento TS, firmar con CloudFront
+
+            // 🧩 Fragments .ts
             elseif (Str::endsWith($line, '.ts')) {
                 $tsPath = trim("{$basePath}/{$line}", '/');
                 $signed = $this->generateSignedUrl("{$this->cloudfrontDomain}/{$tsPath}");
                 $processed[] = $signed;
             }
-            // Lo demás (headers #EXT-X...), dejar igual
+
+            // 📄 Headers, comentarios, etc.
             else {
                 $processed[] = $line;
             }
@@ -149,6 +154,4 @@ class CloudFrontService
             ->header('Content-Type', 'application/vnd.apple.mpegurl')
             ->header('Cache-Control', 'no-store');
     }
-
-
 }
