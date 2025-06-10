@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class ProcessMediaConvertCallback implements ShouldQueue
+class MediaConvertCallback implements ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels, Dispatchable;
 

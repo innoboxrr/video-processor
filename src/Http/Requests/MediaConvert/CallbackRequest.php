@@ -3,7 +3,7 @@
 namespace Innoboxrr\VideoProcessor\Http\Requests\MediaConvert;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Innoboxrr\VideoProcessor\Jobs\ProcessMediaConvertCallback;
+use Innoboxrr\VideoProcessor\Jobs\MediaConvertCallback;
 use Illuminate\Support\Facades\Log;
 
 
@@ -61,7 +61,7 @@ class CallbackRequest extends FormRequest
 
         if ($type === 'Notification') {
             $message = json_decode($this->json('Message'), true);
-            ProcessMediaConvertCallback::dispatchSync($message);
+            MediaConvertCallback::dispatchSync($message);
             return response('Notification received', 200);
         }
         return response('Unhandled message type', 400);

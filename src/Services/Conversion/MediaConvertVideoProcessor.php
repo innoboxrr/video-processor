@@ -198,4 +198,57 @@ class MediaConvertVideoProcessor
             'progress' => 0,
         ]);
     }
+
+    public function check($videos): void
+    {
+        $videoMap = $videos->keyBy('id');
+        $remaining = $videoMap->keys()->toArray(); 
+        $nextToken = null;
+
+        do {
+            $response = $this->client->listJobs([
+                'MaxResults' => 20,
+                'Order' => 'DESCENDING',
+                'NextToken' => $nextToken,
+            ]);
+
+            foreach ($response['Jobs'] as $job) {
+                $metadata = $job['UserMetadata'] ?? [];
+
+                if (!isset($metadata['VideoId'])) {
+                    continue;
+                }
+
+                $videoId = (int) $metadata['VideoId'];
+
+                if (!in_array($videoId, $remaining)) {
+                    continue;
+                }
+
+                $video = $videoMap[$videoId];
+                $status = $job['Status'];
+
+                if ($status === 'COMPLETE') {
+                    $video->update([
+                        'status' => 'available_for_viewing',
+                        'progress' => 100,
+                    ]);
+                    $remaining = array_diff($remaining, [$videoId]);
+                } elseif ($status === 'ERROR') {
+                    $video->update([
+                        'status' => 'processing_error',
+                        'progress' => 0,
+                    ]);
+                    $remaining = array_diff($remaining, [$videoId]);
+                } else {
+                    // SUBMITTED / PROGRESSING → todavía en curso, no hacemos nad
+                }
+            }
+
+            $nextToken = $response['NextToken'] ?? null;
+
+        } while ($nextToken && !empty($remaining));
+    }
+
+
 }

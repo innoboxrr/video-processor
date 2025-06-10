@@ -17,6 +17,19 @@ class VideoService extends AbstractVideoService
         return;
     }
 
+    public function mediaConvertCheck()
+    {
+        // Primero revisar si existen videos que estén con el status processing_in_mediaconvert
+        $videos = $this->getVideosByStatus('processing_in_mediaconvert')
+            ->filter(function ($video) {
+                return $video->created_at->lte(now()->subMinutes(5));
+            });
+        if ($videos->isEmpty()) {
+            return;
+        }
+        app(MediaConvertVideoProcessor::class)->check($videos);
+    }
+
     public function generateSubtitles($video)
     {
         app(SubtitleService::class)->generate($video);

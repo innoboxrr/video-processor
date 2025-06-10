@@ -7,7 +7,8 @@ use Innoboxrr\VideoProcessor\Services\VideoService;
 use Innoboxrr\VideoProcessor\Console\Commands\{
     ProcessVideoCommand,
     GenerateSubtitlesCommand,
-    TranslateSubtitlesCommand
+    TranslateSubtitlesCommand,
+    MediaConvertCheckCommand
 };
 
 class AppServiceProvider extends ServiceProvider
@@ -32,7 +33,8 @@ class AppServiceProvider extends ServiceProvider
         $this->commands([
             ProcessVideoCommand::class,
             GenerateSubtitlesCommand::class,
-            TranslateSubtitlesCommand::class
+            TranslateSubtitlesCommand::class,
+            MediaConvertCheckCommand::class,
         ]);
     }   
 }
