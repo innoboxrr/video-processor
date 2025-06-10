@@ -7,16 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Bus\Dispatchable;
 
 class ProcessMediaConvertCallback implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use InteractsWithQueue, Queueable, SerializesModels, Dispatchable;
 
     public array $message;
 
     public function __construct(array $message)
     {
         $this->message = $message;
+
     }
 
     public function handle(): void

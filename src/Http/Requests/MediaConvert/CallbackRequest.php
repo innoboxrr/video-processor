@@ -61,7 +61,7 @@ class CallbackRequest extends FormRequest
 
         if ($type === 'Notification') {
             $message = json_decode($this->json('Message'), true);
-            ProcessMediaConvertCallback::dispatch($message);
+            ProcessMediaConvertCallback::dispatchSync($message);
             return response('Notification received', 200);
         }
         return response('Unhandled message type', 400);
