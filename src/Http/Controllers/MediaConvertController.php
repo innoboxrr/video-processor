@@ -10,7 +10,7 @@ class MediaConvertController extends Controller
 {
     public function __construct()
     {
-        
+        //
     }
 
     public function callback(CallbackRequest $request)
