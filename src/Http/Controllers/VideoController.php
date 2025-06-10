@@ -3,7 +3,6 @@
 namespace Innoboxrr\VideoProcessor\Http\Controllers;
 
 use Innoboxrr\VideoProcessor\Services\VideoService;
-use Innoboxrr\VideoProcessor\Services\Delivery\CloudFrontService;
 
 class VideoController extends Controller
 {
@@ -16,29 +15,13 @@ class VideoController extends Controller
         $this->videoService = $videoService;
     }
 
-    public function player($code)
-    {
+    public function player($code) 
+    {   
         $this->videoService->authorization();
-
-        $video = $this->videoService->getVideoByCode($code);
-
-        $resourcePath = "https://{$this->videoService->getCloudfrontDomain()}/videos/{$video->uuid}/*";
-
-        $cookies = app(CloudFrontService::class)->generateSignedCookies($resourcePath);
-
-        $response = response()->view('videoprocessor::player', [
-            'video' => $video,
+        return view('videoprocessor::player', [
+            'video' => $this->videoService->getVideoByCode($code)
         ]);
-
-        foreach ($cookies as $name => $value) {
-            $response->withCookie(
-                cookie($name, $value, 240, '/', config('videoprocessor.cookie_domain'), true, true, false, 'Strict')
-            );
-        }
-
-        return $response;
     }
-
 
     public function playlist($code, $filename)
     {

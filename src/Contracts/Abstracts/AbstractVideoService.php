@@ -83,10 +83,4 @@ abstract class AbstractVideoService
 
         return $videoModel::findOrFail($id);
     }
-
-    public function getCloudfrontDomain(): string
-    {
-        return parse_url(config('videoprocessor.cloudfront.domain'), PHP_URL_HOST);
-    }
-
 }

@@ -48,6 +48,7 @@ Route::get('player/{code}', 'VideoController@player')
 	->name('player');
 
 Route::get('playlist/{code}/{filename}', 'VideoController@playlist')
+	->where('filename', '.*')
 	->name('playlist');
 
 Route::get('secret/{code}', 'VideoController@key')

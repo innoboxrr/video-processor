@@ -102,4 +102,39 @@ class CloudFrontService
     {
         return strtr($value, ['+' => '-', '=' => '_', '/' => '~']);
     }
+
+    public function processAndSignPlaylist(string $basePath, string $filename, string $code)
+    {
+        $s3Path = "{$basePath}/{$filename}";
+
+        // Leer el .m3u8 original desde S3
+        $contents = Storage::disk('s3')->get($s3Path);
+
+        $lines = explode("\n", $contents);
+        $processed = [];
+
+        foreach ($lines as $line) {
+
+            // Si es otro m3u8 (rendition), usar ruta local firmada (re-dirige a este mismo método)
+            if (Str::endsWith($line, '.m3u8')) {
+                $route = route('video.playlist', ['code' => $code, 'filename' => $line]);
+                $processed[] = $route;
+            }
+            // Si es un fragmento TS, firmar la URL de CloudFront
+            elseif (Str::endsWith($line, '.ts')) {
+                $tsPath = "{$basePath}/{$line}";
+                $signed = $this->generateSignedUrl("{$this->cloudfrontDomain}/{$tsPath}");
+                $processed[] = $signed;
+            }
+            // Otro contenido (comentarios, headers)
+            else {
+                $processed[] = $line;
+            }
+        }
+
+        return response(implode("\n", $processed), 200, [
+            'Content-Type' => 'application/vnd.apple.mpegurl',
+        ]);
+}
+
 }

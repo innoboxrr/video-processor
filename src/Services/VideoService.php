@@ -7,6 +7,7 @@ use Innoboxrr\VideoProcessor\Services\Conversion\MediaConvertVideoProcessor;
 use Innoboxrr\VideoProcessor\Services\Delivery\CloudFrontService;
 use Innoboxrr\VideoProcessor\Services\Subtitles\SubtitleService;
 use Innoboxrr\VideoProcessor\Support\Helpers\VideoHelper;
+use Illuminate\Support\Str;
 
 class VideoService extends AbstractVideoService
 {
@@ -29,8 +30,14 @@ class VideoService extends AbstractVideoService
     public function playerResponse($code, $filename = 'index.m3u8')
     {
         $video = $this->getVideoByCode($code);
+
+        if (Str::endsWith($filename, '.m3u8')) {
+            return app(CloudFrontService::class)->processAndSignPlaylist($video->s3_hls_path, $filename, $code);
+        }
+
         return app(CloudFrontService::class)->playback($video->s3_hls_path, $filename);
     }
+
 
     public function keyResponse($code, $key)
     {
