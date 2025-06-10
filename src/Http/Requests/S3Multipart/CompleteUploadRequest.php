@@ -2,7 +2,6 @@
 
 namespace Innoboxrr\VideoProcessor\Http\Requests\S3Multipart;
 
-use App\Models\Video;
 use Innoboxrr\VideoProcessor\Events\VideoUploadSuccessful;
 
 class CompleteUploadRequest extends CustomFormRequest
@@ -38,7 +37,7 @@ class CompleteUploadRequest extends CustomFormRequest
             ],
         ]);
 
-        $video = Video::where('code', $this->video_identifier)->firstOrFail();
+        $video = app(config('videoprocessor.video_class'))::where('code', $this->video_identifier)->firstOrFail();
 
         event(new VideoUploadSuccessful($video->id));
 

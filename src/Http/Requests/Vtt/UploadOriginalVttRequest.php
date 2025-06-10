@@ -2,7 +2,6 @@
 
 namespace Innoboxrr\VideoProcessor\Http\Requests\Vtt;
 
-use App\Models\Video;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -18,7 +17,7 @@ class UploadOriginalVttRequest extends FormRequest
 
     public function authorize()
     {
-        $this->video = Video::findOrFail($this->video_id);
+        $this->video = app(config('videoprocessor.video_class'))::findOrFail($this->video_id);
         return $this->user()->can('update', $this->video) && $this->video->language !== null;
     }
 

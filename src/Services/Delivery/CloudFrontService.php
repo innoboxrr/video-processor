@@ -10,26 +10,25 @@ use Carbon\Carbon;
 class CloudFrontService
 {
     protected string $cloudfrontDomain;
-    protected string $keyPairId;
+    protected string $publicKeyId;
     protected string $privateKeyPath;
     protected int $urlExpirationMinutes;
 
     public function __construct()
     {
         $this->cloudfrontDomain = config('videoprocessor.cloudfront.domain');
-        $this->keyPairId = config('videoprocessor.cloudfront.key_pair_id');
+        $this->publicKeyId = config('videoprocessor.cloudfront.public_key_id');
         $this->privateKeyPath = config('videoprocessor.cloudfront.private_key_path');
         $this->urlExpirationMinutes = config('videoprocessor.cloudfront.url_expiration', 240);
     }
 
-    public function playback(object $video, string $filename)
+    public function playback(string $path, string $filename)
     {
-        $basePath = trim($video->s3_hls_path, '/');
-
-        return $this->generateSignedPlaylist($basePath, $filename, $video);
+        $basePath = trim($path, '/');
+        return $this->generateSignedPlaylist($basePath, $filename);
     }
 
-    protected function generateSignedPlaylist(string $basePath, string $filename, object $video)
+    protected function generateSignedPlaylist(string $basePath, string $filename)
     {
         $url = "{$this->cloudfrontDomain}/{$basePath}/{$filename}";
 
@@ -40,7 +39,7 @@ class CloudFrontService
     {
         $expiresAt = Carbon::now()->addMinutes($this->urlExpirationMinutes)->timestamp;
 
-        $customPolicy = json_encode([
+        $policy = json_encode([
             'Statement' => [[
                 'Resource' => $url,
                 'Condition' => [
@@ -49,12 +48,12 @@ class CloudFrontService
             ]],
         ]);
 
-        $signature = $this->rsaSha1Sign($customPolicy);
+        $signature = $this->rsaSha1Sign($policy);
 
         return $url
-            . '?Policy=' . base64_encode($customPolicy)
-            . '&Signature=' . str_replace(['+', '=', '/'], ['-', '_', '~'], base64_encode($signature))
-            . '&Key-Pair-Id=' . $this->keyPairId;
+            . '?Policy=' . $this->urlSafe(base64_encode($policy))
+            . '&Signature=' . $this->urlSafe(base64_encode($signature))
+            . '&Key-Pair-Id=' . $this->publicKeyId;
     }
 
     protected function rsaSha1Sign(string $policy): string
@@ -71,8 +70,13 @@ class CloudFrontService
         }
 
         openssl_sign($policy, $signature, $pkeyId, OPENSSL_ALGO_SHA1);
-        openssl_free_key($pkeyId);
 
         return $signature;
+    }
+
+
+    protected function urlSafe(string $value): string
+    {
+        return strtr($value, ['+' => '-', '=' => '_', '/' => '~']);
     }
 }

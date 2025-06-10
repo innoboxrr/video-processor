@@ -2,7 +2,6 @@
 
 namespace Innoboxrr\VideoProcessor\Http\Controllers;
 
-use App\Models\Video;
 use Innoboxrr\VideoProcessor\Services\VideoService;
 
 class VideoController extends Controller

@@ -29,12 +29,7 @@ class VideoService extends AbstractVideoService
     public function playerResponse($code, $filename = 'index.m3u8')
     {
         $video = $this->getVideoByCode($code);
-        return $this->resolvePlaybackMethod($video, $filename);
-    }
-
-    protected function resolvePlaybackMethod(object $video, string $filename)
-    {
-        return app(CloudFrontService::class)->playback($video, $filename);
+        return app(CloudFrontService::class)->playback($video->s3_hls_path, $filename);
     }
 
     public function keyResponse($code, $key)
