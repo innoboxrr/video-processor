@@ -43,7 +43,7 @@ class MediaConvertVideoProcessor
             $outputs
         );
 
-        $this->client->createJob([
+        $job = $this->client->createJob([
             'Role' => config('videoprocessor.mediaconvert.role_arn'),
             'Settings' => $jobSettings,
             'UserMetadata' => [
@@ -58,7 +58,7 @@ class MediaConvertVideoProcessor
             ],
         ]);
 
-        $this->markVideoAsProcessing($video);
+        $this->markVideoAsProcessing($video, $job);
     }
 
     /**
@@ -191,9 +191,10 @@ class MediaConvertVideoProcessor
     /**
      * Marca el video como "en procesamiento" en la base de datos.
      */
-    protected function markVideoAsProcessing(object $video): void
+    protected function markVideoAsProcessing(object $video, $job): void
     {
         $video->update([
+            'mediaconvert_job_id' => $job['Job']['Id'],
             'status' => 'processing_in_mediaconvert',
             'progress' => 0,
         ]);
@@ -201,8 +202,8 @@ class MediaConvertVideoProcessor
 
     public function check($videos): void
     {
-        $videoMap = $videos->keyBy('id');
-        $remaining = $videoMap->keys()->toArray(); 
+        $videoMap = $videos->keyBy('mediaconvert_job_id');
+        $pendingIds = $videoMap->keys()->filter()->toArray(); // solo con JobId definido
         $nextToken = null;
 
         do {
@@ -213,19 +214,13 @@ class MediaConvertVideoProcessor
             ]);
 
             foreach ($response['Jobs'] as $job) {
-                $metadata = $job['UserMetadata'] ?? [];
+                $jobId = $job['Id'];
 
-                if (!isset($metadata['VideoId'])) {
+                if (!in_array($jobId, $pendingIds)) {
                     continue;
                 }
 
-                $videoId = (int) $metadata['VideoId'];
-
-                if (!in_array($videoId, $remaining)) {
-                    continue;
-                }
-
-                $video = $videoMap[$videoId];
+                $video = $videoMap[$jobId];
                 $status = $job['Status'];
 
                 if ($status === 'COMPLETE') {
@@ -233,22 +228,22 @@ class MediaConvertVideoProcessor
                         'status' => 'available_for_viewing',
                         'progress' => 100,
                     ]);
-                    $remaining = array_diff($remaining, [$videoId]);
                 } elseif ($status === 'ERROR') {
                     $video->update([
                         'status' => 'processing_error',
                         'progress' => 0,
                     ]);
-                    $remaining = array_diff($remaining, [$videoId]);
-                } else {
-                    // SUBMITTED / PROGRESSING → todavía en curso, no hacemos nad
                 }
+
+                // Remueve del array para no volver a procesar
+                $pendingIds = array_diff($pendingIds, [$jobId]);
             }
 
             $nextToken = $response['NextToken'] ?? null;
 
-        } while ($nextToken && !empty($remaining));
+        } while ($nextToken && !empty($pendingIds));
     }
+
 
 
 }
