@@ -53,3 +53,8 @@ Route::get('playlist/{code}/{filename}', 'VideoController@playlist')
 
 Route::get('secret/{code}', 'VideoController@key')
 	->name('key');
+
+// Video Processing
+
+Route::post('media-convert/callback', 'MediaConvertController@callback')
+	->name('media.convert.callback');

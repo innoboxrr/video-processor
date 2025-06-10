@@ -47,8 +47,19 @@ class MediaConvertVideoProcessor
             'Role' => config('videoprocessor.mediaconvert.role_arn'),
             'Settings' => $jobSettings,
             'UserMetadata' => [
-                'Customer' => 'Profemx'
-            ]
+                'Customer' => 'Profemx',
+                'VideoCode' => $video->code,
+                'VideoId' => $video->id,
+            ],
+            'Notification' => [
+                'TopicArn' => config('videoprocessor.mediaconvert.notification_topic_arn'),
+                'Events' => [
+                    'COMPLETED',
+                    'ERROR',
+                    'PROGRESSING',
+                ],
+
+            ],
         ]);
 
         $this->markVideoAsProcessing($video);

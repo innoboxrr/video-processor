@@ -8,20 +8,17 @@ return [
 
     'mediaconvert' => [
         'role_arn' => env('MEDIACONVERT_ROLE_ARN'),
-        'endpoint' => env('MEDIACONVERT_ENDPOINT'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
         'output_bucket' => env('AWS_MEDIACONVERT_OUTPUT_BUCKET'),
-        'encryption_key' => env('HLS_STATIC_KEY'), // en hex
-        'key_uri' => env('HLS_KEY_URI'), // URL pública a servir la key
+        'notification_topic_arn' => env('MEDIACONVERT_NOTIFICATION_TOPIC_ARN'),
     ],
 
     'cloudfront' => [
-        'domain' => env('CLOUDFRONT_DOMAIN'), // e.g. https://d123.cloudfront.net
-        'key_pair_id' => env('CLOUDFRONT_KEY_PAIR_ID'),
-        'private_key_path' => storage_path('app/cloudfront/private_key.pem'),
-        'url_expiration' => 240, // minutos
+        'domain' => env('CLOUDFRONT_DOMAIN'),
+        'public_key_id' => env('CLOUDFRONT_PUBLIC_KEY_ID'),
+        'private_key_path' => storage_path(env('CLOUDFRONT_PRIVATE_KEY_PATH', "app/cloudfront/private_key.pem")),
+        'url_expiration' => env('CLOUDFRONT_URL_EXPIRATION', 240),
     ],
-
 
 	'formats' => [
         'low' => [

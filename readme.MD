@@ -275,6 +275,16 @@ Y solo podrán reproducirse si son válidas y no han expirado.
 
 ---
 
+## Notificaciones de SNS para el procesamiento de MediaConverter 
+
+✅ 1. Crea un SNS Topic en AWS
+Ve a AWS SNS.
+
+Crea un Topic de tipo Standard.
+
+Dale un nombre (ej. MediaConvertJobNotifications).
+
+Guarda el ARN del topic (lo usarás en MediaConvert).
 
 # TODO
 
