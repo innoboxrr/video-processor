@@ -3,6 +3,7 @@
 namespace Innoboxrr\VideoProcessor\Http\Controllers;
 
 use Innoboxrr\VideoProcessor\Services\VideoService;
+use Innoboxrr\VideoProcessor\Services\Delivery\CloudFrontService;
 
 class VideoController extends Controller
 {
