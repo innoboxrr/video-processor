@@ -56,6 +56,29 @@ class CloudFrontService
             . '&Key-Pair-Id=' . $this->publicKeyId;
     }
 
+    public function generateSignedCookies(string $resource): array
+    {
+        $expiresAt = Carbon::now()->addMinutes($this->urlExpirationMinutes)->timestamp;
+
+        $policy = json_encode([
+            'Statement' => [[
+                'Resource' => $resource,
+                'Condition' => [
+                    'DateLessThan' => ['AWS:EpochTime' => $expiresAt],
+                ],
+            ]],
+        ]);
+
+        $signature = $this->rsaSha1Sign($policy);
+
+        return [
+            'CloudFront-Policy' => $this->urlSafe(base64_encode($policy)),
+            'CloudFront-Signature' => $this->urlSafe(base64_encode($signature)),
+            'CloudFront-Key-Pair-Id' => $this->publicKeyId,
+        ];
+    }
+
+
     protected function rsaSha1Sign(string $policy): string
     {
         $privateKey = file_get_contents($this->privateKeyPath);

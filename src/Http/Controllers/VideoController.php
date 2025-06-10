@@ -15,13 +15,29 @@ class VideoController extends Controller
         $this->videoService = $videoService;
     }
 
-    public function player($code) 
-    {   
+    public function player($code)
+    {
         $this->videoService->authorization();
-        return view('videoprocessor::player', [
-            'video' => $this->videoService->getVideoByCode($code)
+
+        $video = $this->videoService->getVideoByCode($code);
+
+        $resourcePath = "https://{$this->videoService->getCloudfrontDomain()}/videos/{$video->uuid}/*";
+
+        $cookies = app(CloudFrontService::class)->generateSignedCookies($resourcePath);
+
+        $response = response()->view('videoprocessor::player', [
+            'video' => $video,
         ]);
+
+        foreach ($cookies as $name => $value) {
+            $response->withCookie(
+                cookie($name, $value, 240, '/', config('videoprocessor.cookie_domain'), true, true, false, 'Strict')
+            );
+        }
+
+        return $response;
     }
+
 
     public function playlist($code, $filename)
     {
