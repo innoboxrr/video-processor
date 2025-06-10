@@ -51,7 +51,7 @@ class MediaConvertVideoProcessor
                 'VideoCode' => $video->code,
                 'VideoId' => $video->id,
             ],
-            'Notification' => [
+            'Notifications' => [
                 'TopicArn' => config('videoprocessor.mediaconvert.notification_topic_arn'),
                 'Events' => [
                     'COMPLETED',
