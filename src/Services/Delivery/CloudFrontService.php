@@ -117,7 +117,7 @@ class CloudFrontService
 
             // Si es otro m3u8 (rendition), usar ruta local firmada (re-dirige a este mismo método)
             if (Str::endsWith($line, '.m3u8')) {
-                $route = route('video.playlist', ['code' => $code, 'filename' => $line]);
+                $route = route('videoprocessor.playlist', ['code' => $code, 'filename' => $line]);
                 $processed[] = $route;
             }
             // Si es un fragmento TS, firmar la URL de CloudFront
