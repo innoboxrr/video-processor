@@ -28,9 +28,9 @@ class VideoController extends Controller
         return $this->videoService->playerResponse($code, $filename);
     }
 
-    public function key($code, $key)
+    public function key($code)
     {
-        return $this->videoService->keyResponse($code, $key);
+        return $this->videoService->keyResponse($code);
     }
 
 }

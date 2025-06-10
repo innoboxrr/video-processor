@@ -40,7 +40,7 @@ class VideoService extends AbstractVideoService
     }
 
 
-    public function keyResponse($code, $key)
+    public function keyResponse($code)
     {
         return response(hex2bin(VideoHelper::getEncryptionKey($code)), 200, [
             'Content-Type' => 'application/octet-stream',
