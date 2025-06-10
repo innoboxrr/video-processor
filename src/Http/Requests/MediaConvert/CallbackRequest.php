@@ -11,7 +11,11 @@ class CallbackRequest extends FormRequest
 {
     protected function prepareForValidation()
     {
-        //
+        // Log the incoming request for debugging purposes
+        Log::info('MediaConvert Callback Request', [
+            'headers' => $this->headers->all(),
+            'body' => $this->all(),
+        ]);
     }
 
     public function authorize()
