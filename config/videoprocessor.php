@@ -4,7 +4,7 @@ return [
 
     'video_class' => env('VIDEOPROCESSOR_VIDEO_CLASS', 'App\Models\Video'),
 
-    'process_with_mediaconvert' => env('VIDEOPROCESSOR_PROCESS_WITH_MEDIACONVERT', false),
+    'queue' => env('VIDEOPROCESSOR_QUEUE', 'default'),
 
     'mediaconvert' => [
         'role_arn' => env('MEDIACONVERT_ROLE_ARN'),
@@ -43,10 +43,6 @@ return [
     ],
 	
     'enabled_formats' => ['low', 'mid', 'high'],
-
-	'ffmpeg_path' => env('FFMPEG_PATH', '/usr/bin/ffmpeg'),
-	'ffprobe_path' => env('FPROBE_PATH', '/usr/bin/ffprobe'),
-    'ffmpeg_threads' => env('FFMPEG_THREADS', 12),
 
 	's3_url' => env('S3_URL', 'https://innoboxrr.s3.amazonaws.com'),
     'cloudfront_url' => env('CLOUDFRONT_URL', 'd1st6n2eacne1j.cloudfront.net'),

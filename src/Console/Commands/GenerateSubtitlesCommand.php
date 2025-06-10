@@ -3,25 +3,17 @@
 namespace Innoboxrr\VideoProcessor\Console\Commands;
 
 use Illuminate\Console\Command;
-use Innoboxrr\VideoProcessor\Services\VideoService;
+use Innoboxrr\VideoProcessor\Jobs\GenerateSubtitlesJob;
 
 class GenerateSubtitlesCommand extends Command
 {
-    
     protected $signature = 'video:generate-subtitles {videoId}';
+    
     protected $description = 'Genera los subtitulos de un video';
 
-    public function __construct()
+    public function handle()
     {
-        parent::__construct();
-    }
-
-    public function handle(VideoService $videoService)
-    {
-        $videoId = $this->argument('videoId');
-
-        $videoService->generateSubtitles($videoId);
-
+        GenerateSubtitlesJob::dispatchSync($this->argument('videoId'));
         $this->info('Subtitulos generados correctamente');
     }
 

@@ -7,31 +7,15 @@ use Illuminate\Support\Facades\Storage;
 
 abstract class AbstractVideoService
 {
-    protected $ffmpegPath;
-    protected $ffprobePath;
     protected $cloudfrontUrl;
     protected $videoIdentifier;
     protected $s3BasePath;
 
     public function __construct()
     {
-        $this->configureFFmpeg();
         $this->cloudfrontUrl = config('videoprocessor.cloudfront_url');
-        $this->checkDependencies();
     }
-
-    protected function configureFFmpeg(): void
-    {
-        $this->ffmpegPath = config('videoprocessor.ffmpeg_path');
-        $this->ffprobePath = config('videoprocessor.ffprobe_path');
-
-        config([
-            'laravel-ffmpeg.ffmpeg.binaries' => $this->ffmpegPath,
-            'laravel-ffmpeg.ffprobe.binaries' => $this->ffprobePath,
-            'laravel-ffmpeg.log_channel' => 'stack',
-        ]);
-    }
-
+    
     public static function authorization(): bool
     {
         if (method_exists(static::class, 'customAuthorization')) {
@@ -70,17 +54,6 @@ abstract class AbstractVideoService
             return Hash::check($secret, $hashSecret);
         } catch (\Exception $e) {
             return false;
-        }
-    }
-
-    private function checkDependencies(): void
-    {
-        if (!file_exists($this->ffmpegPath) || !is_executable($this->ffmpegPath)) {
-            throw new \Exception('FFmpeg no está instalado o no es ejecutable.');
-        }
-
-        if (!file_exists($this->ffprobePath) || !is_executable($this->ffprobePath)) {
-            throw new \Exception('FFprobe no está instalado o no es ejecutable.');
         }
     }
 

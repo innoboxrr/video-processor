@@ -162,8 +162,8 @@ class MediaConvertVideoProcessor
                             'Type' => 'STATIC_KEY',
                             'EncryptionMethod' => 'AES128',
                             'StaticKeyProvider' => [
-                                'StaticKeyValue' => VideoHelper::getEncryptionKey($video->uuid),
-                                'Url' => VideoHelper::getEncryptionKey($video->uuid),
+                                'StaticKeyValue' => VideoHelper::getEncryptionKey($video->code),
+                                'Url' => VideoHelper::getEncryptionKey($video->code),
                             ],
                         ],
                     ],

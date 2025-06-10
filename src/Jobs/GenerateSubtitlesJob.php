@@ -2,14 +2,13 @@
 
 namespace Innoboxrr\VideoProcessor\Jobs;
 
-use App\Models\Video;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Innoboxrr\VideoProcessor\Services\VideoService;
 
 class GenerateSubtitlesJob implements ShouldQueue, ShouldBeUnique
 {
@@ -22,7 +21,6 @@ class GenerateSubtitlesJob implements ShouldQueue, ShouldBeUnique
     public function __construct($videoId)
     {
         $this->videoId = $videoId;
-        $this->onQueue('video_processor');
     }
 
     public function uniqueId(): string
@@ -30,12 +28,9 @@ class GenerateSubtitlesJob implements ShouldQueue, ShouldBeUnique
         return 'generate-subtitles-' . $this->videoId;
     }
 
-    public function handle()
+    public function handle(VideoService $videoService)
     {
-        $video = Video::findOrFail($this->videoId);
-
-        Artisan::call('video:generate-subtitles', [
-            'videoId' => $video->id
-        ]);
+        $video = app(config('videoprocessor.video_class'))::findOrFail($this->videoId);
+        $videoService->generateSubtitles($video);
     }
 }

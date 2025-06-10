@@ -15,7 +15,7 @@ class ProcessVideoHLS
      */
     public function handle(VideoUploadSuccessful $event)
     {
-        $videoId = $event->videoId;
-        ProcessVideoJob::dispatch($videoId);
+        ProcessVideoJob::dispatch($event->videoId)
+            ->onQueue(config('video-processor.queue', 'default'));
     }
 }

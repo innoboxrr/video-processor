@@ -3,67 +3,44 @@
 namespace Innoboxrr\VideoProcessor\Services;
 
 use Innoboxrr\VideoProcessor\Contracts\Abstracts\AbstractVideoService;
-use Innoboxrr\VideoProcessor\Services\Conversion\FFMpegVideoConverter;
 use Innoboxrr\VideoProcessor\Services\Conversion\MediaConvertVideoProcessor;
 use Innoboxrr\VideoProcessor\Services\Delivery\CloudFrontService;
 use Innoboxrr\VideoProcessor\Services\Subtitles\SubtitleService;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
+use Innoboxrr\VideoProcessor\Support\Helpers\VideoHelper;
 
 class VideoService extends AbstractVideoService
 {
-    public function processVideo($videoId)
+    public function processVideo(object $video)
     {
-        $video = $this->getVideoById($videoId);
-
-        if (config('videoprocessor.process_with_mediaconvert')) {
-            app(MediaConvertVideoProcessor::class)->process($video);
-            return;
-        }
-        // app(FFMpegVideoConverter::class)->process($video);
+        app(MediaConvertVideoProcessor::class)->process($video);
+        return;
     }
 
-    public function generateSubtitles($videoId)
+    public function generateSubtitles($video)
     {
-        $video = $this->getVideoByCode($videoId);
         app(SubtitleService::class)->generate($video);
     }
 
-    public function translateSubtitles($videoId, $sourceLanguage, $targetLanguage)
+    public function translateSubtitles(object $video, $sourceLanguage, $targetLanguage)
     {
-        $video = $this->getVideoByCode($videoId);
         app(SubtitleService::class)->translate($video, $sourceLanguage, $targetLanguage);
     }
 
     public function playerResponse($code, $filename = 'index.m3u8')
     {
         $video = $this->getVideoByCode($code);
-
-        if ($video->status !== 'available_for_viewing') {
-            abort(404);
-        }
-
         return $this->resolvePlaybackMethod($video, $filename);
     }
 
     protected function resolvePlaybackMethod(object $video, string $filename)
     {
-        if (config('videoprocessor.process_with_mediaconvert')) {
-            return app(CloudFrontService::class)->playback($video, $filename);
-        }
-        //return app(FFMpegVideoConverter::class)->playback($video, $filename);
+        return app(CloudFrontService::class)->playback($video, $filename);
     }
 
     public function keyResponse($code, $key)
     {
-        $video = $this->getVideoByCode($code);
-
-        if ($video->status !== 'available_for_viewing') {
-            abort(404);
-        }
-
-        $path = $video->s3_keys_path . '/' . $key;
-
-        return Storage::disk('s3')->download($path);
+        return response(hex2bin(VideoHelper::getEncryptionKey($code)), 200, [
+            'Content-Type' => 'application/octet-stream',
+        ]);
     }
 }

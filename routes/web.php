@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Innoboxrr\VideoProcessor\Support\Helpers\VideoHelper;
 
 // Upload
 Route::post('initiate-upload', 'S3MultipartController@initiateUpload')
@@ -51,13 +50,5 @@ Route::get('player/{code}', 'VideoController@player')
 Route::get('playlist/{code}/{filename}', 'VideoController@playlist')
 	->name('playlist');
 
-Route::get('secret/{code}/{key}', 'VideoController@key')
+Route::get('secret/{code}', 'VideoController@key')
 	->name('key');
-
-
-// MEDIA CONVERTER
-Route::get('/ek/{code}', function (string $code) {
-    return response(hex2bin(VideoHelper::getEncryptionKey($code)), 200, [
-        'Content-Type' => 'application/octet-stream',
-    ]);
-})->name('encryption.key');

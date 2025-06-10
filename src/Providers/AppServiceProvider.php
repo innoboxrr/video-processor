@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 use Innoboxrr\VideoProcessor\Services\VideoService;
 use Innoboxrr\VideoProcessor\Console\Commands\{
     ProcessVideoCommand,
-    VimeoVideoUploader,
     GenerateSubtitlesCommand,
     TranslateSubtitlesCommand
 };
@@ -32,7 +31,6 @@ class AppServiceProvider extends ServiceProvider
 
         $this->commands([
             ProcessVideoCommand::class,
-            VimeoVideoUploader::class,
             GenerateSubtitlesCommand::class,
             TranslateSubtitlesCommand::class
         ]);

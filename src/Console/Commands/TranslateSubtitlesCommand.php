@@ -3,28 +3,21 @@
 namespace Innoboxrr\VideoProcessor\Console\Commands;
 
 use Illuminate\Console\Command;
-use Innoboxrr\VideoProcessor\Services\VideoService;
+use Innoboxrr\VideoProcessor\Jobs\TranslateSubtitlesJob;
 
 class TranslateSubtitlesCommand extends Command
 {
-    
     protected $signature = 'video:translate-subtitles {videoId} {sourceLanguage=en} {targetLanguage=es}';
+
     protected $description = 'Genera y traduce los subtítulos de un video';
 
-    public function __construct()
+    public function handle()
     {
-        parent::__construct();
-    }
-
-    public function handle(VideoService $videoService)
-    {
-        $videoId = $this->argument('videoId');
-        $sourceLanguage = $this->argument('sourceLanguage');
-        $targetLanguage = $this->argument('targetLanguage');
-
-        $videoService->translateSubtitles($videoId, $sourceLanguage, $targetLanguage);
-
+        TranslateSubtitlesJob::dispatchSync(
+            $this->argument('videoId'),
+            $this->argument('sourceLanguage'),
+            $this->argument('targetLanguage')
+        );
         $this->info('Subtitulos generados correctamente');
     }
-
 }
