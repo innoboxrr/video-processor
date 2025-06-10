@@ -25,9 +25,7 @@ class EventServiceProvider extends ServiceProvider
 
     public function boot()
     {
-
         // $this->registerModelEvents();
-
     }
 
     private function registerModelEvents()
@@ -68,6 +66,4 @@ class EventServiceProvider extends ServiceProvider
         }
 
     }
-
-
 }

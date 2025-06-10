@@ -3,26 +3,35 @@
 namespace Innoboxrr\VideoProcessor\Console\Commands;
 
 use Illuminate\Console\Command;
-use Innoboxrr\VideoProcessor\Services\VideoService;
+use App\Models\Video;
+use Innoboxrr\VideoProcessor\Jobs\ProcessVideoJob;
 
 class ProcessVideoCommand extends Command
 {
-    
-    protected $signature = 'video:process {videoId}';
-    protected $description = 'Procesa un video utilizando VideoService';
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'video:process-video-job {videoId}';
 
-    public function __construct()
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Command description';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle()
     {
-        parent::__construct();
+        // Recuperar el video por su id
+        $video = Video::findOrFail($this->argument('videoId'));
+
+        // Despachar el trabajo para procesar el video
+        ProcessVideoJob::dispatch($video->id);
     }
-
-    public function handle(VideoService $videoService)
-    {
-        $videoId = $this->argument('videoId');
-
-        $result = $videoService->processVideo($videoId);
-
-        $this->info('Resultado del procesamiento del video: ');
-    }
-
 }
+

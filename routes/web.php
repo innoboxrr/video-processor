@@ -13,9 +13,6 @@ Route::post('sign-part-upload', 'S3MultipartController@signPartUpload')
 Route::post('complete-upload', 'S3MultipartController@completeUpload')
 	->name('complete.upload');
 
-// Pending. Create retry video process route
-
-// Vtt files
 
 // Original Vtt files
 

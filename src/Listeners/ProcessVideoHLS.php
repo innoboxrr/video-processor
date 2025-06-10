@@ -15,10 +15,7 @@ class ProcessVideoHLS
      */
     public function handle(VideoUploadSuccessful $event)
     {
-        // Accede al ID del video desde el evento
         $videoId = $event->videoId;
-
-        // Llamada al comando
         ProcessVideoJob::dispatch($videoId);
     }
 }

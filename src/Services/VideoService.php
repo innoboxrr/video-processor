@@ -20,8 +20,7 @@ class VideoService extends AbstractVideoService
             app(MediaConvertVideoProcessor::class)->process($video);
             return;
         }
-
-        app(FFMpegVideoConverter::class)->process($video);
+        // app(FFMpegVideoConverter::class)->process($video);
     }
 
     public function generateSubtitles($videoId)
@@ -52,8 +51,7 @@ class VideoService extends AbstractVideoService
         if (config('videoprocessor.process_with_mediaconvert')) {
             return app(CloudFrontService::class)->playback($video, $filename);
         }
-
-        return app(FFMpegVideoConverter::class)->playback($video, $filename);
+        //return app(FFMpegVideoConverter::class)->playback($video, $filename);
     }
 
     public function keyResponse($code, $key)
