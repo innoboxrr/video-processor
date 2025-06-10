@@ -25,8 +25,7 @@ class VideoController extends Controller
 
     public function playlist($code, $filename)
     {
-        $url = $this->videoService->playerResponse($code, $filename);
-        return redirect()->away($url);
+        return $this->videoService->playerResponse($code, $filename);
     }
 
     public function key($code, $key)

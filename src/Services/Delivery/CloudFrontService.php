@@ -105,36 +105,50 @@ class CloudFrontService
 
     public function processAndSignPlaylist(string $basePath, string $filename, string $code)
     {
-        $s3Path = "{$basePath}/{$filename}";
+        $s3Path = trim("{$basePath}/{$filename}", '/');
 
-        // Leer el .m3u8 original desde S3
-        $contents = Storage::disk('s3')->get($s3Path);
+        // Leer archivo del disco S3
+        try {
+            $contents = Storage::disk('s3')->get($s3Path);
+        } catch (\Throwable $e) {
+            abort(404, 'Playlist not found on S3');
+        }
 
-        $lines = explode("\n", $contents);
+        $lines = preg_split("/\r\n|\n|\r/", $contents); // soporta cualquier tipo de salto de línea
         $processed = [];
 
         foreach ($lines as $line) {
+            $line = trim($line);
 
-            // Si es otro m3u8 (rendition), usar ruta local firmada (re-dirige a este mismo método)
+            if ($line === '') {
+                $processed[] = '';
+                continue;
+            }
+
+            // Si es otro .m3u8 (rendition), usar ruta de Laravel
             if (Str::endsWith($line, '.m3u8')) {
-                $route = route('videoprocessor.playlist', ['code' => $code, 'filename' => $line]);
+                $route = route('videoprocessor.playlist', [
+                    'code' => $code,
+                    'filename' => $line,
+                ]);
                 $processed[] = $route;
             }
-            // Si es un fragmento TS, firmar la URL de CloudFront
+            // Si es fragmento TS, firmar con CloudFront
             elseif (Str::endsWith($line, '.ts')) {
-                $tsPath = "{$basePath}/{$line}";
+                $tsPath = trim("{$basePath}/{$line}", '/');
                 $signed = $this->generateSignedUrl("{$this->cloudfrontDomain}/{$tsPath}");
                 $processed[] = $signed;
             }
-            // Otro contenido (comentarios, headers)
+            // Lo demás (headers #EXT-X...), dejar igual
             else {
                 $processed[] = $line;
             }
         }
 
-        return response(implode("\n", $processed), 200, [
-            'Content-Type' => 'application/vnd.apple.mpegurl',
-        ]);
-}
+        return response(implode("\r\n", $processed), 200)
+            ->header('Content-Type', 'application/vnd.apple.mpegurl')
+            ->header('Cache-Control', 'no-store');
+    }
+
 
 }

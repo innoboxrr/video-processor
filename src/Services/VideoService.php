@@ -35,7 +35,8 @@ class VideoService extends AbstractVideoService
             return app(CloudFrontService::class)->processAndSignPlaylist($video->s3_hls_path, $filename, $code);
         }
 
-        return app(CloudFrontService::class)->playback($video->s3_hls_path, $filename);
+        $url = app(CloudFrontService::class)->playback($video->s3_hls_path, $filename);
+        return redirect()->away($url);
     }
 
 
