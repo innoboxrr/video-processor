@@ -3,6 +3,7 @@
 namespace Innoboxrr\VideoProcessor\Contracts\Abstracts;
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 abstract class AbstractVideoService
@@ -70,7 +71,12 @@ abstract class AbstractVideoService
             throw new \Exception("Model class for 'video' is not defined or does not exist.");
         }
 
-        return $videoModel::where('code', $code)->firstOrFail();
+        $cacheKey = "video_by_code_{$code}";
+        $ttl = now()->addMinutes(config('videoprocessor.cache_ttl', 10)); // TTL por config/env
+
+        return Cache::remember($cacheKey, $ttl, function () use ($videoModel, $code) {
+            return $videoModel::where('code', $code)->firstOrFail();
+        });
     }
 
     public function getVideoById(int $id): object
@@ -81,7 +87,12 @@ abstract class AbstractVideoService
             throw new \Exception("Model class for 'video' is not defined or does not exist.");
         }
 
-        return $videoModel::findOrFail($id);
+        $cacheKey = "video_by_id_{$id}";
+        $ttl = now()->addMinutes(config('videoprocessor.cache_ttl', 10)); // TTL por config/env
+
+        return Cache::remember($cacheKey, $ttl, function () use ($videoModel, $id) {
+            return $videoModel::findOrFail($id);
+        });
     }
 
     public function getVideosByStatus(string $status): \Illuminate\Database\Eloquent\Collection
