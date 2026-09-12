@@ -13,11 +13,14 @@
         }
     ],
     "require-dev": {
-        "innoboxrr/larapack-generator": "^3.2|^4.0",
-        "orchestra/testbench": "^8.14"
+        "innoboxrr/larapack-generator": "^7.0",
+        "orchestra/testbench": "^11.0",
+        "phpunit/phpunit": "^11.5 || ^12.0"
     },
     "require": {
-        "pbmedia/laravel-ffmpeg": "^8.3"
+        "pbmedia/laravel-ffmpeg": "^8.3",
+        "php": "^8.3",
+        "illuminate/support": "^13.0"
     },
     "extra": {
         "laravel": {
@@ -28,5 +31,11 @@
                 "Innoboxrr\\VideoProcessor\\Providers\\RouteServiceProvider"
             ]
         }
-    }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Innoboxrr\\VideoProcessor\\Tests\\": "tests/"
+        }
+    },
+    "description": "Procesamiento de video en Laravel: transcodificacion a HLS y entrega por CloudFront con URLs firmadas."
 }
